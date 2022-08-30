@@ -41,7 +41,8 @@ int equal(int arr_count, int* arr){
 
 	int choices[] = {1,2,5};
 
-	int total_rounds = max(_arrcount(choices),choices);
+	int dec = min(_arrcount(choices),choices);
+	int total_rounds = max(_arrcount(choices),choices) / dec;
 	int* round_array = malloc(sizeof(int) * total_rounds);
 	memset(round_array,0,sizeof(int) * total_rounds);
 
@@ -59,7 +60,7 @@ int equal(int arr_count, int* arr){
 			}
 		}
 
-		cur_min--;
+		cur_min -= dec;
 	}
 
 	int answer = min(total_rounds,round_array);
