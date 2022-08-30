@@ -1,6 +1,6 @@
 #include "stdlib.h"
-
 #include "stdio.h"
+#include "string.h"
 #include "limits.h"
 
 //HINT: for distributions, 
@@ -8,24 +8,20 @@
 
 #define _arrcount(arr)  sizeof(arr)/sizeof(arr[0])
 
-int is_equal(int arr_count, int* arr){
 
-	int avg = 0;
+int max(int count,int* arr){
+	int m = 0;
 
-	for(int i = 0; i < arr_count; i++){
-		avg += arr[i];
-	}
-
-	avg /= arr_count;
-
-	for(int i = 0; i < arr_count; i++){
-		if(arr[i] != avg){
-			return 0;
+	for(int i = 0; i < count; i++){
+		if(arr[i] > m){
+			m = arr[i];
 		}
 	}
 
-	return 1;
+
+	return m;
 }
+
 
 int min(int count,int* arr){
 	int m = INT_MAX;
@@ -40,75 +36,43 @@ int min(int count,int* arr){
 	return m;
 }
 
-int exclude_index(int count,int* arr){
-	int index =-1;
-	int max = 0;
-
-	for(int i = 0; i < count; i++){
-		if(max < arr[i]){
-			max = arr[i];
-			index = i;
-		}
-	}
-
-	return index;
-}
 
 int equal(int arr_count, int* arr){
-#if 0
-	printf("--------\n");
-	for(int i = 0; i < arr_count; i++){
-		printf("%d ",arr[i]);
+
+	int choices[] = {1,2,5};
+
+	int total_rounds = max(_arrcount(choices),choices);
+	int* round_array = malloc(sizeof(int) * total_rounds);
+	memset(round_array,0,sizeof(int) * total_rounds);
+
+	int cur_min = min(arr_count,arr);
+
+	for(int i = 0; i < total_rounds; i++){
+		int* cur = round_array + i;
+
+		for(int j = 0; j < arr_count; j++){
+			int diff = arr[j] - cur_min;
+			for(int k = _arrcount(choices) - 1; k != -1; k--){
+				int c = choices[k];
+				*cur += diff /c; 
+				diff = diff % c;
+			}
+		}
+
+		cur_min--;
 	}
 
-	if(is_equal(arr_count,arr)){
-		printf("FOUND!\n");
-		return 0;
-	}
+	int answer = min(total_rounds,round_array);
+	free(round_array);
 
-	if(min(arr_count,arr) <= 0){
-		return 100;
-	}
-
-	printf("\n");
-#else
-	if(min(arr_count,arr) <= 0){
-		return 100;
-	}
-
-	if(is_equal(arr_count,arr)){ 
-		return 0;
-	}
-#endif
-
-
-	int choice_array[] = {1,2,6};
-	int rounds_array[_arrcount(choice_array)] = {0};
-
-	for(int i = 0; i < _arrcount(rounds_array); i++){
-		rounds_array[i] = INT_MAX;
-	}
-
-
-
-	for(int i = 0; i < _arrcount(choice_array) ; i++){
-		int c = choice_array[i];
-
-		int exclude = exclude_index(arr_count,arr);
-
-		arr[exclude] -= c;
-		rounds_array[i] = 1 + equal(arr_count,arr);
-		arr[exclude] += c;
-	}
-
-	return min(_arrcount(rounds_array),rounds_array);
+	return answer;
 }
 
 
 
 int main(int argc, char** argv){
 
-	int arr[] = {1,1,5};
+	int arr[] = {10,7,12};
 	int count = _arrcount(arr);
 
 	int rounds = equal(count,arr);
