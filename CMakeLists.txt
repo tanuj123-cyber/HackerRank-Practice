@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.9)
 project(hacker_rank)
 
-set(OPT_FLAGS "-g -O0 -fno-omit-frame-pointer -fstack-protector-strong -ftime-trace")
+set(FLAGS "-g -O0 -fno-omit-frame-pointer -fstack-protector-strong")
 
+set(CMAKE_CXX_FLAGS ${FLAGS})
+set(CMAKE_C_FLAGS ${FLAGS})
 
 # Output Directory Variables
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
